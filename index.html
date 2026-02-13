@@ -3,689 +3,873 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Will you be my Valentine Taanu?</title>
+  <title>Hotel Menu UI</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
 
   <style>
     :root{
-      --bg:#fff0f5;
-      --card:#ffffff;
-      --primary:#e91e63;
-      --primary-dark:#c2185b;
-      --text:#2d2a32;
-      --yes:#ffc0cb;
-      --no:#ef4444;
-      --soft:#ffe3ec;
-      --shadow: 0 20px 50px rgba(233,30,99,.15), 0 6px 18px rgba(0,0,0,.06);
+      --bg:#0b1220;
+      --card:#0f1a2f;
+      --card2:#0c1528;
+      --text:#e8eefc;
+      --muted:#a9b6d8;
+      --primary:#7c3aed;    /* violet */
+      --primary2:#22c55e;   /* green */
+      --danger:#ef4444;
+      --line:rgba(255,255,255,.08);
+      --shadow: 0 18px 45px rgba(0,0,0,.35);
+      --radius:18px;
     }
-
     *{box-sizing:border-box}
     body{
-      margin:0; min-height:100svh; display:grid; place-items:center;
+      margin:0;
       font-family:"Poppins",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
       background:
-        radial-gradient(circle at 18% 22%, #ffe3ec, var(--bg) 60%),
-        radial-gradient(circle at 85% 85%, #ffd1e0, var(--bg) 60%),
-        radial-gradient(circle at 70% 18%, #fff7fb, transparent 55%);
+        radial-gradient(900px 600px at 18% 10%, rgba(124,58,237,.35), transparent 60%),
+        radial-gradient(900px 600px at 90% 80%, rgba(34,197,94,.25), transparent 55%),
+        var(--bg);
       color:var(--text);
-      overflow-x:hidden;
+      min-height:100svh;
     }
 
-    /* floating petals in background */
-    .petal{
-      position:fixed;
-      width:14px; height:14px;
-      background: radial-gradient(circle at 30% 30%, #fff, #ffc0cb 70%);
-      border-radius: 60% 40% 60% 40%;
-      opacity:.55;
-      filter: blur(.2px);
-      pointer-events:none;
-      animation: floaty 8s linear infinite;
-      z-index:0;
-    }
-    @keyframes floaty{
-      from { transform: translateY(-20px) translateX(0) rotate(0deg); }
-      to   { transform: translateY(110vh) translateX(60px) rotate(240deg); }
-    }
-
-    .card{
-      width:min(780px,92vw);
-      background: linear-gradient(180deg, #ffffff, #fff7fb);
-      border-radius:24px;
-      padding:26px 22px 28px;
-      box-shadow: var(--shadow);
-      text-align:center;
-      position:relative;
-      overflow:hidden;
-      min-height:500px;
-      isolation:isolate;
-      z-index:1;
-    }
-
-    /* Fancy border glow */
-    .card::before{
-      content:"";
-      position:absolute;
-      inset:0;
-      padding:2px;
-      border-radius:24px;
-      background: linear-gradient(135deg,
-        rgba(233,30,99,.35),
-        rgba(255,192,203,.55),
-        rgba(255,255,255,.65),
-        rgba(233,30,99,.22)
-      );
-      -webkit-mask:
-        linear-gradient(#000 0 0) content-box,
-        linear-gradient(#000 0 0);
-      -webkit-mask-composite: xor;
-              mask-composite: exclude;
-      pointer-events:none;
-      z-index:0;
-    }
-
-    /* Soft bottom glow */
-    .card::after{
-      content:"";
-      position:absolute;
-      left:50%; bottom:-150px;
-      transform:translateX(-50%);
-      width:560px; height:290px;
-      background: radial-gradient(circle, rgba(233,30,99,.16), transparent 70%);
-      z-index:0;
-      pointer-events:none;
-    }
-
-    /* subtle pattern overlay */
-    .pattern{
-      position:absolute;
-      inset:0;
-      background:
-        radial-gradient(circle at 12% 18%, rgba(255,192,203,.18) 0 2px, transparent 3px),
-        radial-gradient(circle at 82% 28%, rgba(233,30,99,.12) 0 2px, transparent 3px),
-        radial-gradient(circle at 30% 78%, rgba(233,30,99,.10) 0 2px, transparent 3px),
-        radial-gradient(circle at 70% 86%, rgba(255,192,203,.16) 0 2px, transparent 3px);
-      opacity:.7;
-      z-index:0;
-      pointer-events:none;
-    }
-
-    /* Corner decorations (inline SVG) */
-    .corner{
-      position:absolute;
-      width:170px;
-      opacity:.30;
-      pointer-events:none;
-      z-index:0;
-      filter: drop-shadow(0 12px 18px rgba(233,30,99,.10));
-    }
-    .corner.tl{top:-18px; left:-18px; transform: rotate(-10deg);}
-    .corner.tr{top:-18px; right:-18px; transform: scaleX(-1) rotate(-10deg);}
-    .corner.bl{bottom:-18px; left:-18px; transform: scaleY(-1) rotate(-10deg);}
-    .corner.br{bottom:-18px; right:-18px; transform: scale(-1) rotate(-10deg);}
-
-    .content{ position:relative; z-index:1; }
-
-    /* Bouquet hero */
-    .hero{
+    /* Layout */
+    .wrap{
+      width:min(1200px,94vw);
+      margin:22px auto;
       display:grid;
-      gap:10px;
-      place-items:center;
-      margin-top:2px;
+      grid-template-columns: 1.55fr .85fr;
+      gap:16px;
+      align-items:start;
+    }
+    @media (max-width: 980px){
+      .wrap{grid-template-columns:1fr; }
+      .cart{ position:static !important; }
     }
 
-    .tag{
+    /* Header */
+    header{
+      width:min(1200px,94vw);
+      margin:18px auto 0;
+      display:flex;
+      gap:12px;
+      justify-content:space-between;
+      align-items:flex-start;
+    }
+    .brand{
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+    }
+    .brand h1{
+      margin:0;
+      font-size:clamp(22px,3.2vw,34px);
+      line-height:1.1;
+      font-weight:800;
+      letter-spacing:.2px;
+    }
+    .brand p{
+      margin:0;
+      color:var(--muted);
+      font-size:13px;
+    }
+    .pill{
       display:inline-flex;
-      gap:8px;
       align-items:center;
+      gap:8px;
+      padding:10px 12px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.04);
+      border-radius:999px;
+      box-shadow: 0 10px 25px rgba(0,0,0,.18);
+    }
+
+    /* Controls */
+    .controls{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      align-items:center;
+      justify-content:flex-end;
+    }
+    .input, .select, .btn{
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.04);
+      color:var(--text);
+      padding:10px 12px;
+      font-size:14px;
+      outline:none;
+      transition:transform .06s ease, background .2s ease, border-color .2s ease;
+    }
+    .input{ width:min(320px,58vw); }
+    .select{ padding:10px 12px; cursor:pointer; }
+    .btn{
+      cursor:pointer;
+      font-weight:700;
+      box-shadow: 0 10px 20px rgba(0,0,0,.18);
+      user-select:none;
+    }
+    .btn:hover{ transform:translateY(-1px); background:rgba(255,255,255,.06); }
+    .btn.primary{
+      background:linear-gradient(135deg, rgba(124,58,237,.95), rgba(34,197,94,.75));
+      border-color:rgba(255,255,255,.14);
+    }
+    .toggle{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 12px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      background:rgba(255,255,255,.04);
+      font-size:13px;
+      color:var(--muted);
+      user-select:none;
+    }
+    .toggle input{ accent-color: var(--primary2); }
+
+    /* Panels */
+    .panel{
+      background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .panel .head{
+      padding:14px 16px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      border-bottom:1px solid var(--line);
+      background:rgba(255,255,255,.03);
+    }
+    .panel .head h2{
+      margin:0;
+      font-size:16px;
+      font-weight:800;
+      letter-spacing:.2px;
+    }
+    .panel .head .small{
+      font-size:12px;
+      color:var(--muted);
+    }
+
+    /* Category chips */
+    .chips{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      padding:12px 14px;
+      border-bottom:1px solid var(--line);
+      background:rgba(0,0,0,.06);
+    }
+    .chip{
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.03);
+      color:var(--text);
       padding:8px 12px;
       border-radius:999px;
-      background: rgba(255,192,203,.35);
-      border: 1px solid rgba(233,30,99,.12);
-      color:#8b0f3a;
+      cursor:pointer;
+      font-weight:700;
+      font-size:13px;
+      transition:transform .06s ease, background .2s ease, border-color .2s ease;
+      user-select:none;
+    }
+    .chip:hover{ transform:translateY(-1px); }
+    .chip.active{
+      border-color:rgba(124,58,237,.7);
+      background:rgba(124,58,237,.18);
+    }
+
+    /* Menu grid */
+    .grid{
+      padding:14px;
+      display:grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap:12px;
+    }
+    @media (max-width: 520px){
+      .grid{ grid-template-columns: 1fr; }
+    }
+    .item{
+      background:rgba(255,255,255,.03);
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:12px;
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
+      transition:transform .06s ease, background .2s ease, border-color .2s ease;
+    }
+    .item:hover{
+      transform:translateY(-1px);
+      background:rgba(255,255,255,.05);
+      border-color:rgba(255,255,255,.14);
+    }
+    .thumb{
+      width:56px; height:56px;
+      border-radius:14px;
+      background:
+        radial-gradient(circle at 30% 30%, rgba(255,255,255,.22), transparent 60%),
+        linear-gradient(135deg, rgba(124,58,237,.35), rgba(34,197,94,.25));
+      border:1px solid rgba(255,255,255,.10);
+      flex:0 0 auto;
+      display:grid;
+      place-items:center;
+      font-weight:900;
+      color:rgba(255,255,255,.9);
+    }
+    .meta{ flex:1; }
+    .name{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      margin:0;
+      font-weight:800;
+      font-size:14px;
+      line-height:1.2;
+    }
+    .tag{
+      font-size:11px;
+      padding:3px 8px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      color:var(--muted);
+      background:rgba(255,255,255,.02);
+    }
+    .desc{
+      margin:6px 0 10px;
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.35;
+    }
+    .row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
+    }
+    .price{
+      font-weight:900;
+      letter-spacing:.2px;
+    }
+    .veg{
+      border-color:rgba(34,197,94,.55);
+      color:#bdf7cd;
+      background:rgba(34,197,94,.10);
+    }
+    .nonveg{
+      border-color:rgba(239,68,68,.55);
+      color:#ffd0d0;
+      background:rgba(239,68,68,.10);
+    }
+    .add{
+      background:rgba(34,197,94,.16);
+      border-color:rgba(34,197,94,.45);
+      color:#d7ffe2;
+      padding:8px 12px;
+      border-radius:999px;
+      cursor:pointer;
+      font-weight:900;
+      font-size:12px;
+      user-select:none;
+      transition:transform .06s ease, background .2s ease;
+    }
+    .add:hover{ transform:translateY(-1px); background:rgba(34,197,94,.22); }
+
+    /* Cart */
+    .cart{
+      position:sticky;
+      top:14px;
+    }
+    .cartBody{ padding:12px 14px; }
+    .mode{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-bottom:10px;
+    }
+    .modeBtn{
+      flex:1;
+      text-align:center;
+      padding:10px 12px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.03);
+      cursor:pointer;
       font-weight:800;
       font-size:13px;
-      margin: 8px 0 2px;
-    }
-
-    .bouquet-wrap{
-      width:min(360px,78vw);
-      display:grid;
-      place-items:center;
-      margin: 4px auto 2px;
-      position:relative;
-    }
-    .bouquet{
-      width:100%;
-      max-width:360px;
-      filter: drop-shadow(0 16px 28px rgba(233,30,99,.18));
-      transform: translateY(2px);
-    }
-    .sparkle{
-      position:absolute;
-      inset:auto auto 6% 10%;
-      width:10px; height:10px;
-      border-radius:50%;
-      background: rgba(255,255,255,.95);
-      box-shadow:
-        24px -12px 0 rgba(255,255,255,.75),
-        64px 10px 0 rgba(255,255,255,.70),
-        110px -18px 0 rgba(255,255,255,.60);
-      filter: blur(.2px);
-      opacity:.95;
-      animation: twinkle 1.8s ease-in-out infinite alternate;
-    }
-    @keyframes twinkle{
-      from{ transform: translateY(0) scale(.95); opacity:.75; }
-      to{ transform: translateY(-2px) scale(1.05); opacity:1; }
-    }
-
-    h1{
-      margin:8px 0 4px;
-      font-size:clamp(28px,4.6vw,46px);
-      line-height:1.1;
-      font-weight:900;
-      color:var(--primary);
-      letter-spacing:.2px;
-      text-shadow: 0 8px 22px rgba(233,30,99,.12);
-    }
-    p.subtitle{ margin:0 0 12px; opacity:.9; }
-    .tiny{font-size:12px}
-
-    .cta{
-      display:flex;
-      gap:14px;
-      justify-content:center;
-      margin:18px 0 6px;
-      flex-wrap:wrap
-    }
-
-    button{
-      border:0;
-      border-radius:999px;
-      padding:12px 22px;
-      font-size:16px;
-      font-weight:900;
-      cursor:pointer;
-      transition:transform .08s ease, box-shadow .2s ease, background .2s ease;
-      box-shadow:0 10px 22px rgba(0,0,0,.10);
-      position:relative;
       user-select:none;
-      -webkit-tap-highlight-color: transparent;
     }
-
-    .yes{
-      background:var(--yes);
-      color:#8b0f3a;
-      border:2px solid #f8a9b8;
+    .modeBtn.active{
+      border-color:rgba(124,58,237,.75);
+      background:rgba(124,58,237,.18);
     }
-    .yes:hover{transform:translateY(-1px)}
-    .yes:active{transform:translateY(0px) scale(.99)}
-
-    .no{
-      background:#fff;
-      color:var(--no);
-      border:2px solid var(--no);
-    }
-    .no:hover{transform:translateY(-1px)}
-
-    .hidden{display:none}
-
-    .result{
-      margin-top:12px;
-      animation:pop .35s ease-out;
-      position:relative;
-      z-index:1;
-    }
-    .result h2{
-      font-size:clamp(26px,4vw,38px);
-      margin:6px 0 10px;
-      color:var(--primary-dark);
-      text-shadow: 0 10px 24px rgba(233,30,99,.14);
-    }
-
-    /* Celebration overlay after YES */
-    .celebrate{
-      position:absolute;
-      inset:0;
+    .two{
       display:grid;
-      place-items:center;
-      pointer-events:none;
-      z-index:2;
-      opacity:0;
-      transition: opacity .25s ease;
-    }
-    .celebrate.show{ opacity:1; }
-    .yay{
-      display:inline-flex;
-      align-items:center;
+      grid-template-columns: 1fr 1fr;
       gap:10px;
+    }
+    .field label{
+      display:block;
+      font-size:11px;
+      color:var(--muted);
+      margin:0 0 6px 6px;
+    }
+    .field input{
+      width:100%;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.03);
+      padding:10px 12px;
+      color:var(--text);
+      outline:none;
+    }
+
+    .cartList{
+      margin-top:12px;
+      border-top:1px dashed rgba(255,255,255,.12);
+      padding-top:12px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      max-height:340px;
+      overflow:auto;
+    }
+    .cartItem{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      padding:10px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.03);
+      border-radius:14px;
+    }
+    .cartItem .title{
+      margin:0;
+      font-weight:900;
+      font-size:13px;
+      line-height:1.2;
+    }
+    .cartItem .sub{
+      margin:4px 0 0;
+      font-size:12px;
+      color:var(--muted);
+    }
+    .qty{
+      margin-left:auto;
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    .qbtn{
+      width:30px; height:30px;
+      border-radius:10px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.03);
+      color:var(--text);
+      cursor:pointer;
+      font-weight:900;
+    }
+    .qnum{ min-width:18px; text-align:center; font-weight:900; }
+    .remove{
+      margin-left:6px;
+      background:rgba(239,68,68,.14);
+      border-color:rgba(239,68,68,.40);
+      color:#ffd0d0;
+    }
+
+    .summary{
+      margin-top:12px;
+      border-top:1px dashed rgba(255,255,255,.12);
+      padding-top:12px;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      font-size:13px;
+    }
+    .sumRow{
+      display:flex;
+      justify-content:space-between;
+      color:var(--muted);
+    }
+    .sumRow strong{ color:var(--text); }
+    .checkout{
+      margin-top:12px;
+      display:flex;
+      gap:10px;
+    }
+    .checkout .btn{
+      flex:1;
+      border-radius:14px;
+      padding:12px 14px;
+      font-weight:900;
+    }
+    .btn.danger{
+      background:rgba(239,68,68,.14);
+      border-color:rgba(239,68,68,.35);
+      color:#ffd0d0;
+    }
+    .empty{
+      color:var(--muted);
+      font-size:13px;
+      padding:14px 8px 4px;
+      text-align:center;
+    }
+
+    /* Toast */
+    .toast{
+      position:fixed;
+      left:50%;
+      bottom:18px;
+      transform:translateX(-50%);
+      background:rgba(10,16,28,.85);
+      border:1px solid rgba(255,255,255,.10);
+      color:var(--text);
       padding:10px 14px;
       border-radius:999px;
-      background: rgba(255,255,255,.70);
-      border:1px solid rgba(233,30,99,.18);
-      box-shadow: 0 16px 40px rgba(233,30,99,.18);
-      font-weight:900;
-      color: #8b0f3a;
-      transform: translateY(-6px);
-      animation: bounce .7s ease-in-out infinite alternate;
-    }
-    @keyframes bounce{
-      from{ transform: translateY(-8px) scale(1); }
-      to{ transform: translateY(-12px) scale(1.02); }
-    }
-
-    /* Floating hearts after YES */
-    .hearts{
-      position:fixed;
-      inset:0;
+      box-shadow: 0 18px 45px rgba(0,0,0,.35);
+      opacity:0;
       pointer-events:none;
-      z-index:3;
-      overflow:hidden;
+      transition:opacity .25s ease, transform .25s ease;
+      font-size:13px;
     }
-    .heart-float{
-      position:absolute;
-      bottom:-40px;
-      font-size:18px;
-      opacity:.9;
-      animation: rise 2.6s ease-in infinite;
-      filter: drop-shadow(0 10px 12px rgba(233,30,99,.25));
-    }
-    @keyframes rise{
-      0%{ transform: translateY(0) translateX(0) scale(.9); opacity:0; }
-      15%{ opacity:1; }
-      100%{ transform: translateY(-110vh) translateX(40px) scale(1.25); opacity:0; }
-    }
-
-    .gif-wrap{
-      display:flex; gap:14px; flex-wrap:wrap;
-      justify-content:center; align-items:center;
-    }
-    .gif{
-      width:min(330px,42vw);
-      border-radius:14px;
-      box-shadow:0 12px 28px rgba(233,30,99,.20);
-    }
-
-    @keyframes pop{
-      0%{transform:scale(.95);opacity:0}
-      100%{transform:scale(1);opacity:1}
-    }
-
-    footer{margin-top:18px; font-size:12px; opacity:.75}
-
-    @media (max-width:480px){
-      .card{min-height:600px;}
-      .bouquet-wrap{width:min(340px,88vw);}
-      .corner{width:140px;}
+    .toast.show{
+      opacity:1;
+      transform:translateX(-50%) translateY(-4px);
     }
   </style>
 </head>
 
 <body>
-  <!-- background petals -->
-  <span class="petal" style="left:12%; animation-delay:-1s; opacity:.45"></span>
-  <span class="petal" style="left:28%; animation-delay:-3s; width:12px; height:12px"></span>
-  <span class="petal" style="left:52%; animation-delay:-2.2s; width:16px; height:16px; opacity:.4"></span>
-  <span class="petal" style="left:74%; animation-delay:-4s"></span>
-  <span class="petal" style="left:90%; animation-delay:-5.2s; width:11px; height:11px; opacity:.35"></span>
-
-  <main class="card" role="main" aria-live="polite">
-    <div class="pattern"></div>
-
-    <!-- corner floral svg (reused in 4 corners) -->
-    <svg class="corner tl" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <defs>
-        <linearGradient id="cg" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stop-color="#ff80ab"/>
-          <stop offset="1" stop-color="#e91e63"/>
-        </linearGradient>
-      </defs>
-      <path d="M28 170 C55 120, 70 95, 105 72 C132 54, 170 52, 182 24" fill="none" stroke="#2fb07b" stroke-width="10" stroke-linecap="round"/>
-      <path d="M62 122 C45 118, 34 104, 44 92 C56 78, 74 92, 72 108 C71 118, 68 124, 62 122Z" fill="#3fd09b"/>
-      <g transform="translate(78 96)">
-        <circle r="12" fill="#ffd54a"/>
-        <g fill="url(#cg)">
-          <ellipse rx="18" ry="11" transform="rotate(0) translate(23 0)"/>
-          <ellipse rx="18" ry="11" transform="rotate(60) translate(23 0)"/>
-          <ellipse rx="18" ry="11" transform="rotate(120) translate(23 0)"/>
-          <ellipse rx="18" ry="11" transform="rotate(180) translate(23 0)"/>
-          <ellipse rx="18" ry="11" transform="rotate(240) translate(23 0)"/>
-          <ellipse rx="18" ry="11" transform="rotate(300) translate(23 0)"/>
-        </g>
-      </g>
-      <g transform="translate(120 60)">
-        <circle r="10" fill="#ffd54a"/>
-        <g fill="#ffc0cb">
-          <ellipse rx="15" ry="9" transform="rotate(0) translate(18 0)"/>
-          <ellipse rx="15" ry="9" transform="rotate(60) translate(18 0)"/>
-          <ellipse rx="15" ry="9" transform="rotate(120) translate(18 0)"/>
-          <ellipse rx="15" ry="9" transform="rotate(180) translate(18 0)"/>
-          <ellipse rx="15" ry="9" transform="rotate(240) translate(18 0)"/>
-          <ellipse rx="15" ry="9" transform="rotate(300) translate(18 0)"/>
-        </g>
-      </g>
-    </svg>
-    <svg class="corner tr" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <use href="#"></use>
-    </svg>
-    <!-- simplest: duplicate same path by reusing the same svg via copy -->
-    <svg class="corner tr" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <defs>
-        <linearGradient id="cg2" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stop-color="#ff80ab"/>
-          <stop offset="1" stop-color="#e91e63"/>
-        </linearGradient>
-      </defs>
-      <path d="M28 170 C55 120, 70 95, 105 72 C132 54, 170 52, 182 24" fill="none" stroke="#2fb07b" stroke-width="10" stroke-linecap="round"/>
-      <path d="M62 122 C45 118, 34 104, 44 92 C56 78, 74 92, 72 108 C71 118, 68 124, 62 122Z" fill="#3fd09b"/>
-      <g transform="translate(78 96)">
-        <circle r="12" fill="#ffd54a"/>
-        <g fill="url(#cg2)">
-          <ellipse rx="18" ry="11" transform="rotate(0) translate(23 0)"/>
-          <ellipse rx="18" ry="11" transform="rotate(60) translate(23 0)"/>
-          <ellipse rx="18" ry="11" transform="rotate(120) translate(23 0)"/>
-          <ellipse rx="18" ry="11" transform="rotate(180) translate(23 0)"/>
-          <ellipse rx="18" ry="11" transform="rotate(240) translate(23 0)"/>
-          <ellipse rx="18" ry="11" transform="rotate(300) translate(23 0)"/>
-        </g>
-      </g>
-      <g transform="translate(120 60)">
-        <circle r="10" fill="#ffd54a"/>
-        <g fill="#ffc0cb">
-          <ellipse rx="15" ry="9" transform="rotate(0) translate(18 0)"/>
-          <ellipse rx="15" ry="9" transform="rotate(60) translate(18 0)"/>
-          <ellipse rx="15" ry="9" transform="rotate(120) translate(18 0)"/>
-          <ellipse rx="15" ry="9" transform="rotate(180) translate(18 0)"/>
-          <ellipse rx="15" ry="9" transform="rotate(240) translate(18 0)"/>
-          <ellipse rx="15" ry="9" transform="rotate(300) translate(18 0)"/>
-        </g>
-      </g>
-    </svg>
-
-    <svg class="corner bl" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <defs>
-        <linearGradient id="cg3" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stop-color="#ff80ab"/>
-          <stop offset="1" stop-color="#e91e63"/>
-        </linearGradient>
-      </defs>
-      <path d="M28 170 C55 120, 70 95, 105 72 C132 54, 170 52, 182 24" fill="none" stroke="#2fb07b" stroke-width="10" stroke-linecap="round"/>
-      <path d="M62 122 C45 118, 34 104, 44 92 C56 78, 74 92, 72 108 C71 118, 68 124, 62 122Z" fill="#3fd09b"/>
-      <g transform="translate(78 96)">
-        <circle r="12" fill="#ffd54a"/>
-        <g fill="url(#cg3)">
-          <ellipse rx="18" ry="11" transform="rotate(0) translate(23 0)"/>
-          <ellipse rx="18" ry="11" transform="rotate(60) translate(23 0)"/>
-          <ellipse rx="18" ry="11" transform="rotate(120) translate(23 0)"/>
-          <ellipse rx="18" ry="11" transform="rotate(180) translate(23 0)"/>
-          <ellipse rx="18" ry="11" transform="rotate(240) translate(23 0)"/>
-          <ellipse rx="18" ry="11" transform="rotate(300) translate(23 0)"/>
-        </g>
-      </g>
-      <g transform="translate(120 60)">
-        <circle r="10" fill="#ffd54a"/>
-        <g fill="#ffc0cb">
-          <ellipse rx="15" ry="9" transform="rotate(0) translate(18 0)"/>
-          <ellipse rx="15" ry="9" transform="rotate(60) translate(18 0)"/>
-          <ellipse rx="15" ry="9" transform="rotate(120) translate(18 0)"/>
-          <ellipse rx="15" ry="9" transform="rotate(180) translate(18 0)"/>
-          <ellipse rx="15" ry="9" transform="rotate(240) translate(18 0)"/>
-          <ellipse rx="15" ry="9" transform="rotate(300) translate(18 0)"/>
-        </g>
-      </g>
-    </svg>
-
-    <svg class="corner br" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <defs>
-        <linearGradient id="cg4" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stop-color="#ff80ab"/>
-          <stop offset="1" stop-color="#e91e63"/>
-        </linearGradient>
-      </defs>
-      <path d="M28 170 C55 120, 70 95, 105 72 C132 54, 170 52, 182 24" fill="none" stroke="#2fb07b" stroke-width="10" stroke-linecap="round"/>
-      <path d="M62 122 C45 118, 34 104, 44 92 C56 78, 74 92, 72 108 C71 118, 68 124, 62 122Z" fill="#3fd09b"/>
-      <g transform="translate(78 96)">
-        <circle r="12" fill="#ffd54a"/>
-        <g fill="url(#cg4)">
-          <ellipse rx="18" ry="11" transform="rotate(0) translate(23 0)"/>
-          <ellipse rx="18" ry="11" transform="rotate(60) translate(23 0)"/>
-          <ellipse rx="18" ry="11" transform="rotate(120) translate(23 0)"/>
-          <ellipse rx="18" ry="11" transform="rotate(180) translate(23 0)"/>
-          <ellipse rx="18" ry="11" transform="rotate(240) translate(23 0)"/>
-          <ellipse rx="18" ry="11" transform="rotate(300) translate(23 0)"/>
-        </g>
-      </g>
-      <g transform="translate(120 60)">
-        <circle r="10" fill="#ffd54a"/>
-        <g fill="#ffc0cb">
-          <ellipse rx="15" ry="9" transform="rotate(0) translate(18 0)"/>
-          <ellipse rx="15" ry="9" transform="rotate(60) translate(18 0)"/>
-          <ellipse rx="15" ry="9" transform="rotate(120) translate(18 0)"/>
-          <ellipse rx="15" ry="9" transform="rotate(180) translate(18 0)"/>
-          <ellipse rx="15" ry="9" transform="rotate(240) translate(18 0)"/>
-          <ellipse rx="15" ry="9" transform="rotate(300) translate(18 0)"/>
-        </g>
-      </g>
-    </svg>
-
-    <div class="content">
-      <div class="hero">
-        <div class="tag">💐 A little bouquet for you</div>
-
-        <div class="bouquet-wrap" aria-hidden="true">
-          <div class="sparkle"></div>
-
-          <!-- inline bouquet -->
-          <svg class="bouquet" viewBox="0 0 420 360" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <linearGradient id="wrap" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0" stop-color="#fff1f6"/>
-                <stop offset="1" stop-color="#ffd1e0"/>
-              </linearGradient>
-              <linearGradient id="ribbon" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0" stop-color="#ff80ab"/>
-                <stop offset="1" stop-color="#e91e63"/>
-              </linearGradient>
-              <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
-                <feDropShadow dx="0" dy="10" stdDeviation="10" flood-color="#e91e63" flood-opacity=".18"/>
-              </filter>
-            </defs>
-
-            <path filter="url(#softShadow)"
-              d="M90 330 C150 250, 155 210, 165 180 C190 105, 285 105, 305 180 C315 210, 320 250, 330 330 Z"
-              fill="url(#wrap)" stroke="#f5a7bb" stroke-opacity=".55" stroke-width="3" />
-            <path
-              d="M110 330 C160 260, 170 220, 185 185 C205 130, 270 130, 290 185 C305 220, 310 260, 312 330 Z"
-              fill="#fff" opacity=".35" />
-
-            <path d="M210 115 C200 170, 200 220, 200 295" stroke="#2fb07b" stroke-width="8" stroke-linecap="round"/>
-            <path d="M240 120 C235 170, 235 225, 235 295" stroke="#2fb07b" stroke-width="8" stroke-linecap="round"/>
-            <path d="M175 125 C182 170, 188 230, 192 295" stroke="#2fb07b" stroke-width="8" stroke-linecap="round"/>
-
-            <path d="M185 190 C155 180, 140 155, 158 140 C180 121, 205 148, 205 170 C205 188, 197 196, 185 190Z"
-              fill="#3fd09b" opacity=".9"/>
-            <path d="M245 198 C272 186, 295 160, 275 142 C252 121, 233 150, 235 172 C237 190, 236 202, 245 198Z"
-              fill="#3fd09b" opacity=".9"/>
-
-            <g transform="translate(150 120)">
-              <circle cx="0" cy="0" r="12" fill="#ffd54a"/>
-              <g fill="#ff80ab">
-                <ellipse rx="20" ry="12" transform="rotate(0) translate(26 0)"/>
-                <ellipse rx="20" ry="12" transform="rotate(60) translate(26 0)"/>
-                <ellipse rx="20" ry="12" transform="rotate(120) translate(26 0)"/>
-                <ellipse rx="20" ry="12" transform="rotate(180) translate(26 0)"/>
-                <ellipse rx="20" ry="12" transform="rotate(240) translate(26 0)"/>
-                <ellipse rx="20" ry="12" transform="rotate(300) translate(26 0)"/>
-              </g>
-            </g>
-
-            <g transform="translate(215 105)">
-              <circle cx="0" cy="0" r="28" fill="#ff4d6d" opacity=".95"/>
-              <path d="M-18 -2 C-10 -18, 10 -18, 18 -2 C10 12, -10 12, -18 -2Z" fill="#ff80ab" opacity=".9"/>
-              <path d="M-10 6 C-6 -2, 6 -2, 10 6 C6 14, -6 14, -10 6Z" fill="#ffd1e0" opacity=".7"/>
-              <circle cx="0" cy="-2" r="6" fill="#ffd54a" opacity=".9"/>
-            </g>
-
-            <g transform="translate(275 125)">
-              <circle cx="0" cy="0" r="12" fill="#ffd54a"/>
-              <g fill="#ffc0cb">
-                <ellipse rx="20" ry="12" transform="rotate(0) translate(26 0)"/>
-                <ellipse rx="20" ry="12" transform="rotate(60) translate(26 0)"/>
-                <ellipse rx="20" ry="12" transform="rotate(120) translate(26 0)"/>
-                <ellipse rx="20" ry="12" transform="rotate(180) translate(26 0)"/>
-                <ellipse rx="20" ry="12" transform="rotate(240) translate(26 0)"/>
-                <ellipse rx="20" ry="12" transform="rotate(300) translate(26 0)"/>
-              </g>
-            </g>
-
-            <g transform="translate(210 265)">
-              <path d="M-42 0 C-30 -22, -10 -22, 0 0 C-10 22, -30 22, -42 0Z" fill="url(#ribbon)"/>
-              <path d="M42 0 C30 -22, 10 -22, 0 0 C10 22, 30 22, 42 0Z" fill="url(#ribbon)"/>
-              <circle cx="0" cy="0" r="16" fill="#ff80ab" stroke="#e91e63" stroke-width="3"/>
-              <path d="M-10 18 L-40 55" stroke="#e91e63" stroke-width="8" stroke-linecap="round"/>
-              <path d="M10 18 L40 55" stroke="#e91e63" stroke-width="8" stroke-linecap="round"/>
-            </g>
-          </svg>
-        </div>
-
-        <h1>Will you be my Valentine Taanu? 💌</h1>
-        <p class="subtitle tiny">Tap a button to answer.</p>
-      </div>
-
-      <div id="question" class="cta" aria-label="answer choices">
-        <button id="yesBtn" class="yes">Yes 💖</button>
-        <button id="noBtn" class="no">No 😅</button>
-      </div>
-
-      <!-- celebration badge (shown after YES) -->
-      <div id="celebrate" class="celebrate" aria-hidden="true">
-        <div class="yay">🎉 Yayyyy!! 💖💐</div>
-      </div>
-
-      <section id="result" class="result hidden">
-        <h2>Ye Le! 🥰</h2>
-        <div class="gif-wrap">
-          <img class="gif" alt="Cute bear hug" src="https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif">
-          <img class="gif" alt="Adorable blown-away reaction" src="https://media.giphy.com/media/l0ExncehJzexFpRHq/giphy.gif">
-        </div>
-        <p style="margin-top:10px;">💫</p>
-      </section>
-
-      <canvas id="confetti" class="hidden" style="position:fixed;inset:0;pointer-events:none;z-index:4;"></canvas>
-      <div id="hearts" class="hearts hidden" aria-hidden="true"></div>
+  <header>
+    <div class="brand">
+      <h1>🍽️ The Royale Hotel — Menu</h1>
+      <p>Browse dishes, add to cart, and generate a bill (UI demo).</p>
     </div>
-  </main>
+
+    <div class="controls">
+      <input id="search" class="input" placeholder="Search dishes (e.g., dosa, paneer, coffee)..." />
+      <label class="toggle">
+        <input id="vegOnly" type="checkbox" />
+        Veg only
+      </label>
+      <button id="resetBtn" class="btn">Reset</button>
+      <button id="demoBtn" class="btn primary">Add Demo Items</button>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <!-- MENU PANEL -->
+    <section class="panel">
+      <div class="head">
+        <h2>Menu</h2>
+        <div class="small"><span id="countLabel">0</span> items shown</div>
+      </div>
+
+      <div class="chips" id="chips"></div>
+      <div class="grid" id="menuGrid"></div>
+    </section>
+
+    <!-- CART PANEL -->
+    <aside class="panel cart" aria-live="polite">
+      <div class="head">
+        <h2>🧾 Cart & Bill</h2>
+        <div class="small"><span id="cartCount">0</span> items</div>
+      </div>
+
+      <div class="cartBody">
+        <div class="mode" role="tablist" aria-label="order type">
+          <div class="modeBtn active" data-mode="Dine-in">Dine-in</div>
+          <div class="modeBtn" data-mode="Takeaway">Takeaway</div>
+        </div>
+
+        <div class="two">
+          <div class="field">
+            <label id="tableLabel">Table No.</label>
+            <input id="tableRoom" placeholder="e.g., 12" />
+          </div>
+          <div class="field">
+            <label>Customer Name</label>
+            <input id="customerName" placeholder="e.g., Rahul" />
+          </div>
+        </div>
+
+        <div id="cartList" class="cartList"></div>
+        <div id="empty" class="empty">Your cart is empty. Add items from the menu ✨</div>
+
+        <div class="summary">
+          <div class="sumRow"><span>Subtotal</span> <strong id="subTotal">₹0</strong></div>
+          <div class="sumRow"><span>GST (5%)</span> <strong id="gst">₹0</strong></div>
+          <div class="sumRow"><span>Service (7%)</span> <strong id="service">₹0</strong></div>
+          <div class="sumRow"><span>Total</span> <strong id="grandTotal">₹0</strong></div>
+        </div>
+
+        <div class="checkout">
+          <button id="clearBtn" class="btn danger">Clear</button>
+          <button id="printBtn" class="btn primary">Generate Bill</button>
+        </div>
+
+        <p style="margin:12px 0 0;color:var(--muted);font-size:11px;">
+          Tip: Try search + category filters. Works great on mobile too.
+        </p>
+      </div>
+    </aside>
+  </div>
+
+  <div id="toast" class="toast">Added to cart ✅</div>
 
   <script>
-    const yes = document.getElementById('yesBtn');
-    const no = document.getElementById('noBtn');
-    const result = document.getElementById('result');
-    const question = document.getElementById('question');
-    const celebrate = document.getElementById('celebrate');
-    const heartsLayer = document.getElementById('hearts');
+    // --------- DATA (Sample Hotel Menu) ----------
+    const MENU = [
+      { id:"b1", name:"Masala Dosa", price:90,  cat:"Breakfast", veg:true,  desc:"Crispy dosa with spiced potato filling." },
+      { id:"b2", name:"Idli Vada Combo", price:80, cat:"Breakfast", veg:true,  desc:"Soft idlis + vada with sambar & chutney." },
+      { id:"b3", name:"Upma", price:65,        cat:"Breakfast", veg:true,  desc:"Classic south-style upma, light & tasty." },
+      { id:"b4", name:"Egg Omelette", price:70,cat:"Breakfast", veg:false, desc:"Fluffy omelette with herbs." },
 
-    // YES: reveal + big celebration
-    yes.addEventListener('click', () => {
-      question.classList.add('hidden');
-      result.classList.remove('hidden');
+      { id:"l1", name:"Veg Thali", price:160,  cat:"Lunch", veg:true,  desc:"Roti, rice, 2 curries, dal, salad, sweet." },
+      { id:"l2", name:"Paneer Butter Masala", price:190, cat:"Lunch", veg:true,  desc:"Creamy paneer gravy, best with naan." },
+      { id:"l3", name:"Chicken Biryani", price:220, cat:"Lunch", veg:false, desc:"Aromatic basmati with tender chicken." },
+      { id:"l4", name:"Dal Fry + Jeera Rice", price:150, cat:"Lunch", veg:true,  desc:"Comfort meal combo." },
 
-      celebrate.classList.add('show');
-      startConfettiBurst();
-      startFloatingHearts();
+      { id:"d1", name:"Tandoori Roti (2 pcs)", price:40, cat:"Dinner", veg:true,  desc:"Fresh hot rotis." },
+      { id:"d2", name:"Butter Naan (2 pcs)", price:60,   cat:"Dinner", veg:true,  desc:"Soft naan brushed with butter." },
+      { id:"d3", name:"Fish Fry", price:240,   cat:"Dinner", veg:false, desc:"Crispy marinated fish fillet." },
+      { id:"d4", name:"Veg Fried Rice", price:150, cat:"Dinner", veg:true, desc:"Wok-tossed rice with veggies." },
 
-      clearInterval(roamTimer);
-      no.style.display = 'none';
-    });
+      { id:"dr1", name:"Filter Coffee", price:40, cat:"Drinks", veg:true, desc:"Strong South Indian filter coffee." },
+      { id:"dr2", name:"Fresh Lime Soda", price:55, cat:"Drinks", veg:true, desc:"Sweet/salted - refreshing!" },
+      { id:"dr3", name:"Mango Milkshake", price:85, cat:"Drinks", veg:true, desc:"Thick & creamy mango shake." },
+      { id:"dr4", name:"Mineral Water", price:20, cat:"Drinks", veg:true, desc:"500 ml bottle." }
+    ];
 
-    // NO: roam
-    function placeNoRandomly() {
-      if (getComputedStyle(no).position !== 'fixed') no.style.position = 'fixed';
-      const btnRect = no.getBoundingClientRect();
-      const pad = 8;
-      const maxX = Math.max(0, window.innerWidth - btnRect.width - pad);
-      const maxY = Math.max(0, window.innerHeight - btnRect.height - pad);
-      const x = Math.floor(Math.random() * (maxX - pad + 1)) + pad;
-      const y = Math.floor(Math.random() * (maxY - pad + 1)) + pad;
-      no.style.left = x + 'px';
-      no.style.top  = y + 'px';
+    const CATEGORIES = ["All", ...new Set(MENU.map(x => x.cat))];
+
+    // --------- STATE ----------
+    let activeCat = "All";
+    let cart = {}; // {id: qty}
+    let mode = "Dine-in";
+
+    // --------- DOM ----------
+    const chipsEl = document.getElementById("chips");
+    const gridEl = document.getElementById("menuGrid");
+    const countLabel = document.getElementById("countLabel");
+    const searchEl = document.getElementById("search");
+    const vegOnlyEl = document.getElementById("vegOnly");
+    const resetBtn = document.getElementById("resetBtn");
+    const demoBtn = document.getElementById("demoBtn");
+
+    const cartListEl = document.getElementById("cartList");
+    const emptyEl = document.getElementById("empty");
+    const cartCountEl = document.getElementById("cartCount");
+
+    const subTotalEl = document.getElementById("subTotal");
+    const gstEl = document.getElementById("gst");
+    const serviceEl = document.getElementById("service");
+    const grandTotalEl = document.getElementById("grandTotal");
+
+    const clearBtn = document.getElementById("clearBtn");
+    const printBtn = document.getElementById("printBtn");
+
+    const modeBtns = Array.from(document.querySelectorAll(".modeBtn"));
+    const tableLabel = document.getElementById("tableLabel");
+    const tableRoomEl = document.getElementById("tableRoom");
+    const customerNameEl = document.getElementById("customerName");
+
+    const toast = document.getElementById("toast");
+
+    // --------- HELPERS ----------
+    const money = n => "₹" + Math.round(n).toLocaleString("en-IN");
+
+    function showToast(msg){
+      toast.textContent = msg;
+      toast.classList.add("show");
+      setTimeout(() => toast.classList.remove("show"), 1100);
     }
-    let roamTimer = setInterval(placeNoRandomly, 700);
-    ['mouseenter','focus','touchstart','click'].forEach(evt => {
-      no.addEventListener(evt, placeNoRandomly, { passive:true });
-    });
-    window.addEventListener('load', placeNoRandomly);
-    window.addEventListener('resize', placeNoRandomly);
 
-    // Confetti burst (stronger)
-    function startConfettiBurst(){
-      const canvas = document.getElementById('confetti');
-      const ctx = canvas.getContext('2d');
-      canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-      canvas.classList.remove('hidden');
+    function getFilteredMenu(){
+      const q = searchEl.value.trim().toLowerCase();
+      const vegOnly = vegOnlyEl.checked;
 
-      const colors = ['#ffc0cb','#ff80ab','#ff4d6d','#ffe3ec','#ffd1e0','#ffd54a'];
-      const pieces = Array.from({length: 220}).map(() => ({
-        x: Math.random()*canvas.width,
-        y: -20 - Math.random()*80,
-        r: 3 + Math.random()*5,
-        c: colors[Math.floor(Math.random()*colors.length)],
-        s: 2 + Math.random()*4,
-        a: 1,
-        w: 6 + Math.random()*10,
-        h: 3 + Math.random()*6,
-        rot: Math.random()*Math.PI
-      }));
+      return MENU.filter(item => {
+        const matchCat = (activeCat === "All") || (item.cat === activeCat);
+        const matchVeg = !vegOnly || item.veg;
+        const matchQ = !q || (item.name.toLowerCase().includes(q) || item.desc.toLowerCase().includes(q));
+        return matchCat && matchVeg && matchQ;
+      });
+    }
 
-      let frames = 0;
-      function draw(){
-        ctx.clearRect(0,0,canvas.width,canvas.height);
-        pieces.forEach(p => {
-          ctx.globalAlpha = Math.max(0,p.a);
-          ctx.fillStyle = p.c;
-
-          ctx.save();
-          ctx.translate(p.x,p.y);
-          ctx.rotate(p.rot);
-          ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
-          ctx.restore();
-
-          p.y += p.s;
-          p.x += Math.sin((frames+p.y)/18) * 1.6;
-          p.rot += 0.03;
-
-          if (p.y > canvas.height * 0.85) p.a -= 0.02;
+    // --------- RENDER: CATEGORY CHIPS ----------
+    function renderChips(){
+      chipsEl.innerHTML = "";
+      CATEGORIES.forEach(cat => {
+        const chip = document.createElement("button");
+        chip.className = "chip" + (cat === activeCat ? " active" : "");
+        chip.textContent = cat;
+        chip.addEventListener("click", () => {
+          activeCat = cat;
+          renderChips();
+          renderMenu();
         });
-
-        frames++;
-        if (frames < 260) requestAnimationFrame(draw);
-        else canvas.classList.add('hidden');
-      }
-      draw();
+        chipsEl.appendChild(chip);
+      });
     }
 
-    // Floating hearts celebration
-    function startFloatingHearts(){
-      heartsLayer.classList.remove('hidden');
-      heartsLayer.innerHTML = "";
-      const icons = ["💖","💘","💗","💞","💝","🌸","✨"];
-      const count = 26;
+    // --------- RENDER: MENU GRID ----------
+    function renderMenu(){
+      const list = getFilteredMenu();
+      countLabel.textContent = list.length;
 
-      for(let i=0;i<count;i++){
-        const s = document.createElement("span");
-        s.className = "heart-float";
-        s.textContent = icons[Math.floor(Math.random()*icons.length)];
-        s.style.left = Math.floor(Math.random()*100) + "vw";
-        s.style.animationDelay = (Math.random()*0.9) + "s";
-        s.style.fontSize = (16 + Math.random()*18) + "px";
-        heartsLayer.appendChild(s);
+      gridEl.innerHTML = "";
+      list.forEach(item => {
+        const card = document.createElement("div");
+        card.className = "item";
+
+        const thumb = document.createElement("div");
+        thumb.className = "thumb";
+        thumb.textContent = item.cat[0];
+
+        const meta = document.createElement("div");
+        meta.className = "meta";
+
+        const name = document.createElement("p");
+        name.className = "name";
+        name.innerHTML = `${item.name} <span class="tag ${item.veg ? "veg" : "nonveg"}">${item.veg ? "Veg" : "Non‑veg"}</span>`;
+
+        const desc = document.createElement("p");
+        desc.className = "desc";
+        desc.textContent = item.desc;
+
+        const row = document.createElement("div");
+        row.className = "row";
+
+        const price = document.createElement("div");
+        price.className = "price";
+        price.textContent = money(item.price);
+
+        const add = document.createElement("button");
+        add.className = "add";
+        add.textContent = "Add +";
+        add.addEventListener("click", () => addToCart(item.id));
+
+        row.appendChild(price);
+        row.appendChild(add);
+
+        meta.appendChild(name);
+        meta.appendChild(desc);
+        meta.appendChild(row);
+
+        card.appendChild(thumb);
+        card.appendChild(meta);
+
+        gridEl.appendChild(card);
+      });
+    }
+
+    // --------- CART OPS ----------
+    function addToCart(id){
+      cart[id] = (cart[id] || 0) + 1;
+      renderCart();
+      showToast("Added to cart ✅");
+    }
+
+    function decQty(id){
+      if(!cart[id]) return;
+      cart[id] -= 1;
+      if(cart[id] <= 0) delete cart[id];
+      renderCart();
+    }
+
+    function incQty(id){
+      cart[id] = (cart[id] || 0) + 1;
+      renderCart();
+    }
+
+    function removeItem(id){
+      delete cart[id];
+      renderCart();
+    }
+
+    function clearCart(){
+      cart = {};
+      renderCart();
+      showToast("Cart cleared 🧹");
+    }
+
+    function calcTotals(){
+      let subtotal = 0;
+      Object.entries(cart).forEach(([id, qty]) => {
+        const item = MENU.find(x => x.id === id);
+        subtotal += item.price * qty;
+      });
+      const gst = subtotal * 0.05;
+      const service = subtotal * 0.07;
+      const total = subtotal + gst + service;
+      return { subtotal, gst, service, total };
+    }
+
+    // --------- RENDER: CART ----------
+    function renderCart(){
+      const entries = Object.entries(cart);
+      cartCountEl.textContent = entries.reduce((a,[,q]) => a+q, 0);
+
+      cartListEl.innerHTML = "";
+      if(entries.length === 0){
+        emptyEl.style.display = "block";
+      } else {
+        emptyEl.style.display = "none";
       }
 
-      // stop after a short celebration window (keeps page clean)
-      setTimeout(() => heartsLayer.classList.add('hidden'), 3200);
-      setTimeout(() => celebrate.classList.remove('show'), 3400);
+      entries.forEach(([id, qty]) => {
+        const item = MENU.find(x => x.id === id);
+
+        const c = document.createElement("div");
+        c.className = "cartItem";
+
+        const left = document.createElement("div");
+        const title = document.createElement("p");
+        title.className = "title";
+        title.textContent = item.name;
+
+        const sub = document.createElement("p");
+        sub.className = "sub";
+        sub.textContent = `${money(item.price)} × ${qty} = ${money(item.price * qty)}`;
+
+        left.appendChild(title);
+        left.appendChild(sub);
+
+        const qtyWrap = document.createElement("div");
+        qtyWrap.className = "qty";
+
+        const minus = document.createElement("button");
+        minus.className = "qbtn";
+        minus.textContent = "−";
+        minus.addEventListener("click", () => decQty(id));
+
+        const num = document.createElement("div");
+        num.className = "qnum";
+        num.textContent = qty;
+
+        const plus = document.createElement("button");
+        plus.className = "qbtn";
+        plus.textContent = "+";
+        plus.addEventListener("click", () => incQty(id));
+
+        const rem = document.createElement("button");
+        rem.className = "qbtn remove";
+        rem.textContent = "✕";
+        rem.title = "Remove";
+        rem.addEventListener("click", () => removeItem(id));
+
+        qtyWrap.appendChild(minus);
+        qtyWrap.appendChild(num);
+        qtyWrap.appendChild(plus);
+        qtyWrap.appendChild(rem);
+
+        c.appendChild(left);
+        c.appendChild(qtyWrap);
+        cartListEl.appendChild(c);
+      });
+
+      const { subtotal, gst, service, total } = calcTotals();
+      subTotalEl.textContent = money(subtotal);
+      gstEl.textContent = money(gst);
+      serviceEl.textContent = money(service);
+      grandTotalEl.textContent = money(total);
     }
+
+    // --------- MODE TOGGLE ----------
+    modeBtns.forEach(btn => {
+      btn.addEventListener("click", () => {
+        modeBtns.forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        mode = btn.dataset.mode;
+
+        if(mode === "Dine-in"){
+          tableLabel.textContent = "Table No.";
+          tableRoomEl.placeholder = "e.g., 12";
+        }else{
+          tableLabel.textContent = "Room / Pickup";
+          tableRoomEl.placeholder = "e.g., 508 / Counter";
+        }
+      });
+    });
+
+    // --------- BILL GENERATION ----------
+    function generateBill(){
+      const entries = Object.entries(cart);
+      if(entries.length === 0){
+        showToast("Add items first 🙂");
+        return;
+      }
+
+      const customer = customerNameEl.value.trim() || "Guest";
+      const tableRoom = tableRoomEl.value.trim() || (mode === "Dine-in" ? "—" : "—");
+      const { subtotal, gst, service, total } = calcTotals();
+
+      const lines = entries.map(([id, qty]) => {
+        const item = MENU.find(x => x.id === id);
+        return `${item.name}  x${qty}  =  ${money(item.price * qty)}`;
+      }).join("\n");
+
+      const billText =
+`THE ROYALE HOTEL — BILL
+----------------------------
+Mode: ${mode}
+${mode === "Dine-in" ? "Table" : "Room/Pickup"}: ${tableRoom}
+Customer: ${customer}
+
+Items:
+${lines}
+
+----------------------------
+Subtotal: ${money(subtotal)}
+GST (5%): ${money(gst)}
+Service (7%): ${money(service)}
+TOTAL: ${money(total)}
+----------------------------
+Thank you! Visit again ✨`;
+
+      // Open printable window (simple UI)
+      const w = window.open("", "_blank");
+      w.document.write(`
+        <pre style="font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+                    white-space: pre-wrap; padding: 18px; line-height: 1.4;">
+${billText.replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")}
+        </pre>
+        <script>window.print();<\/script>
+      `);
+      w.document.close();
+    }
+
+    // --------- EVENTS ----------
+    searchEl.addEventListener("input", renderMenu);
+    vegOnlyEl.addEventListener("change", renderMenu);
+
+    resetBtn.addEventListener("click", () => {
+      activeCat = "All";
+      searchEl.value = "";
+      vegOnlyEl.checked = false;
+      renderChips();
+      renderMenu();
+      showToast("Filters reset ✅");
+    });
+
+    demoBtn.addEventListener("click", () => {
+      ["b1","l2","dr1"].forEach(addToCart);
+      showToast("Demo items added 🍽️");
+    });
+
+    clearBtn.addEventListener("click", clearCart);
+    printBtn.addEventListener("click", generateBill);
+
+    // --------- INIT ----------
+    renderChips();
+    renderMenu();
+    renderCart();
   </script>
 </body>
 </html>
+``
